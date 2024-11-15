@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>스크롤 요소 고정-헤더</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        font-family: "arial", sans-serif;
+        font-size: 16px;
+        background-color: #fff;
+        scroll-behavior: smooth;
+      }
+      ul,
+      li {
+        list-style: none;
+      }
+      a {
+        display: block;
+        text-decoration: none;
+        color: #333;
+      }
+      .header {
+        background-color: #f5f5f5;
+        padding: 10px;
+        text-align: center;
+      }
+      .navbar {
+        position: relative;
+        width: 100%;
+        background-color: #1f1f1f;
+        overflow: hidden;
+        transition: transform 0.5s;
+      }
+      .navbar ul {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .navbar ul li {
+        margin: 0 10px;
+      }
+      .navbar ul li a {
+        text-align: center;
+        color: #fff;
+        padding: 14px 16px;
+      }
+      .navbar ul li a:hover {
+        color: #333;
+        background-color: #ddd;
+      }
+      .sticky {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 9999;
+        opacity: 0.9;
+      }
+      .slideup {
+        transform: translateY(-100%);
+      }
+      .section {
+        position: relative;
+      }
+      .contents {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        background-color: #333;
+      }
+      .contents:nth-child(even) {
+        background-color: #222;
+      }
+      .contents span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 54px;
+        font-weight: bold;
+        color: #f5f5f5;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 헤더 영역 -->
+    <header id="home" class="header">
+      <h1>My Portfolio Website</h1>
+    </header>
+
+    <!-- 내비게이션 바 -->
+    <nav class="navbar">
+      <ul>
+        <li><a href="#home">HOME</a></li>
+        <li><a href="#visual">VISUAL</a></li>
+        <li><a href="#about">ABOUT</a></li>
+        <li><a href="#portfolio">PORTFOLIO</a></li>
+        <li><a href="#contact">CONTACT</a></li>
+      </ul>
+    </nav>
+
+    <!-- 콘텐츠 영역 -->
+    <section class="section">
+      <article id="visual" class="contents">
+        <span>VISUAL</span>
+      </article>
+      <article id="about" class="contents">
+        <span>ABOUT</span>
+      </article>
+      <article id="portfolio" class="contents">
+        <span>PORTFOLIO</span>
+      </article>
+      <article id="contact" class="contents">
+        <span>CONTACT</span>
+      </article>
+    </section>
+
+    <!-- js -->
+    <script>
+      const navbar = document.querySelector(".navbar");
+      const sticky = navbar.offsetTop; // 요소의 초기 위치를 저장
+      let isSticky = false; // 고정 상태를 추적하기 위한 변수
+      let isMouseOverNavbar = false; // 마우스가 내비게이션 바 위에 있는지 여부
+      let lastMousemoveTime = 0; // 마지막 mousemove 이벤트 시간
+      let slideTimeout; // undefined 변수 선언
+      console.log(sticky, `isSticky: ${isSticky}`); // 57, isSticky: false
+      console.log(`isMouseOverNavbar: ${isMouseOverNavbar}`); // false
+      console.log(`lastMousemoveTime: ${lastMousemoveTime}`); // 0
+
+      window.addEventListener("scroll", () => {
+        makeSticky();
+      });
+
+      const makeSticky = () => {
+        // console.log(pageYOffset);
+        if (window.pageYOffset >= sticky && !isSticky) {
+          // 내비게이션 바가 처음 고정될 때
+          navbar.classList.add("sticky");
+          isSticky = true; // navbar 상태를 고정됨으로 설정
+          console.log("navbar 고정됨", `isSticky: ${isSticky}`);
+
+          // 2초 후 slideup 클래스 추가
+          slideTimeout = setTimeout(() => {
+            if (!isMouseOverNavbar) {
+              // 마우스가 내비게이션 바에 없을 때만 slideup
+              navbar.classList.add("slideup");
+              console.log("navbar 올라감", `isSticky: ${isSticky}`);
+            }
+          }, 2000);
+        } else if (window.pageYOffset < sticky && isSticky) {
+          // 내비게이션 바가 고정되지 않을 때
+          navbar.classList.remove("sticky", "slideup");
+          isSticky = false; // 상태를 고정되지 않음으로 설정
+          clearTimeout(slideTimeout); // slideTimeout 타이머 취소
+          console.log(`isSticky: ${isSticky}`);
+        }
+      };
+
+      // 마우스가 화면 상단 근처에 있을 때 navbar 내려오는 기능(slideup 제거)
+      window.addEventListener("mousemove", (e) => {
+        // console.log(e.clientY);
+
+        // throttle 적용
+        const now = Date.now(); // 현재 시간을 밀리초 단위로 반환하는 함수
+        // console.log(now);
+        if (now - lastMousemoveTime < 500) return; // 0.5초 간격으로만 처리
+        lastMousemoveTime = now;
+
+        if (e.clientY < sticky && isSticky && !isMouseOverNavbar) {
+          navbar.classList.remove("slideup");
+          console.log(
+            `isSticky: ${isSticky}`,
+            `isMouseOverNavbar: ${isMouseOverNavbar}`
+          );
+        }
+      });
+
+      // 마우스가 navbar에 들어왔을 때
+      navbar.addEventListener("mouseenter", () => {
+        if (isSticky) {
+          navbar.classList.remove("slideup");
+        }
+        isMouseOverNavbar = true;
+        console.log(
+          `isSticky: ${isSticky}`,
+          `isMouseOverNavbar: ${isMouseOverNavbar}`
+        );
+      });
+
+      // 마우스가 navbar를 벗어났을 때
+      navbar.addEventListener("mouseleave", () => {
+        if (isSticky) {
+          navbar.classList.add("slideup");
+        }
+        isMouseOverNavbar = false;
+        console.log(
+          `isSticky: ${isSticky}`,
+          `isMouseOverNavbar: ${isMouseOverNavbar}`
+        );
+      });
+    </script>
+  </body>
+</html>

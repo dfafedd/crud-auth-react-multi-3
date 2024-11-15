@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>배경 이미지 고정 해서 차례대로 올라오기</title>
+
+  <style>
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+   }
+   html,
+   body {
+    font-family: "arial", sans-serif;
+    color: #fff;
+    background-color: #111;
+   }
+   .wrap {
+    overflow: hidden;
+   }
+   .item {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+   }
+   .item-num {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-size: 3vw;
+    line-height: 1;
+    z-index: 10;
+   }
+   .item-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: url("https://picsum.photos/2000/1000") no-repeat center;
+    background-size: cover;
+   }
+   .item-img::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+   }
+   .item-title {
+    font-size: 5vw;
+    text-transform: uppercase;
+    display: block;
+    z-index: 100;
+   }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+ </head>
+ <body>
+  <div class="wrap">
+   <!-- section -->
+  </div>
+
+  <!-- js -->
+  <script>
+   const wrap = document.querySelector(".wrap");
+   let html = "";
+
+   // for문을 사용해서 각 섹션을 반복적으로 추가
+   for (let i = 1; i <= 9; i++) {
+    html += `
+    <section id="section${i}" class="item">
+      <span class="item-num">0${i}</span>
+      <div class="item-img"></div>
+      <h2 class="item-title">section0${i}</h2>
+    </section>`;
+   }
+
+   // html을 wrap에 삽입
+   wrap.innerHTML = html;
+
+   // GSAP
+   // 1. 하나의 섹션 고정시키기
+   //  const section5 = document.querySelector("#section5");
+   //  //  console.log(section5);
+
+   //  ScrollTrigger.create({
+   //   trigger: section5,
+   //   start: "top top",
+   //   pin: true,
+   //   pinSpacing: false,
+   //  });
+
+   // 2. 여러개 섹션 고정시키기
+   //  const sections = document.querySelectorAll(".item");
+   //  //  console.log(sections);
+   //  sections.forEach((section) => {
+   //   ScrollTrigger.create({
+   //    trigger: section,
+   //    start: "top top",
+   //    pin: true,
+   //    pinSpacing: false,
+   //   });
+   //  });
+
+   // 3. 스냅 고정 효과 만들기
+   // ".item" 클래스를 가진 모든 요소를 선택하여 sections 변수에 저장
+   const sections = gsap.utils.toArray(".item");
+   console.log(sections);
+
+   // 각 section 요소에 대해 ScrollTrigger 객체를 생성하고,
+   // 그 각각의 시작 위치를 정의하여 result 배열에 저장
+   const result = sections.map((section) => {
+    // console.log(section);
+    return ScrollTrigger.create({
+     trigger: section, // ScrollTrigger가 해당 section요소에서 트리거됨
+     start: "top top", // section의 맨 위가 뷰포트 맨 위에 도달하면 트리거 시작
+    });
+   });
+   console.log(result);
+
+   sections.forEach((section) => {
+    ScrollTrigger.create({
+     trigger: section,
+     pin: true,
+     pinSpacing: false,
+     markers: true,
+     start: () =>
+      section.offsetHeight < window.innerHeight // 요소의 높이가 뷰포트 높이보다 작을 경우
+       ? "top top" // 요소의 위쪽이 뷰포트 위쪽에 맞추어 고정
+       : "bottom bottom", // 그렇지 않을 경우, 요소의 아래쪽이 부포트 아래쪽에 맞추어 고정
+    });
+   });
+
+   // snap 기능 적용
+   ScrollTrigger.create({
+    snap: {
+     snapTo: (progress, self) => {
+      console.log(progress);
+      // 각 ScrollTrigger 객체의 시작 위치를 배열로 만든다.
+      const sectionStarts = result.map((sectionStart) => {
+       return sectionStart.start;
+      });
+
+      // 현재 스크롤 위치에서 가장 가까운 시작 위치로 스냅시킨다.
+      const snapScroll = gsap.utils.snap(sectionStarts, self.scroll());
+
+      // 스냅할 위치를 정규화하여 반환
+      return gsap.utils.normalize(
+       0, // 정규화 시점(0% 스크롤 위치)
+       ScrollTrigger.maxScroll(window), // 정규화 끝점(전체 스크롤 가능한 최대 값)
+       snapScroll // 정규화할 스냅 위치 값
+      );
+     },
+     duration: 0.5, // 스냅 효과가 0.5초 동안 지속
+    },
+   });
+  </script>
+ </body>
+</html>
