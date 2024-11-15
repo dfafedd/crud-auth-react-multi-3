@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>스와이퍼 라이브러리 커스터마이징</title>
+  <link
+   rel="stylesheet"
+   href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+  />
+
+  <style>
+   a {
+    display: inline-block;
+    text-decoration: none;
+    color: #333;
+   }
+   .img-slide {
+    position: relative;
+    display: block;
+    width: 1200px;
+    height: 500px;
+    overflow: hidden;
+    margin: 0 auto;
+   }
+   .swBanner {
+    width: 100%;
+    height: 100%;
+   }
+   .swBanner .swiper-slide {
+    width: 100%;
+    height: 100%;
+   }
+   .swBanner .swiper-slide a {
+    width: 100%;
+    height: 100%;
+   }
+   .swBanner .swiper-slide a img {
+    width: 1200px;
+    height: 500px;
+    object-fit: cover;
+   }
+   .swBanner .swiper-pagination-bullet {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background-color: #fff;
+    opacity: 0.5;
+    transition: width 1s, opacity 1s;
+   }
+   .swBanner .swiper-pagination-bullet-active {
+    width: 80px;
+    opacity: 1;
+   }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+ </head>
+ <body>
+  <div class="img-slide">
+   <!-- Swiper -->
+   <div class="swiper swBanner">
+    <div class="swiper-wrapper">
+     <div class="swiper-slide">
+      <a href="#">
+       <img src="https://picsum.photos/1500/1000?random=1" alt="img1" />
+      </a>
+     </div>
+     <div class="swiper-slide">
+      <a href="#">
+       <img src="https://picsum.photos/1500/1000?random=2" alt="img2" />
+      </a>
+     </div>
+     <div class="swiper-slide">
+      <a href="#">
+       <img src="https://picsum.photos/1500/1000?random=3" alt="img3" />
+      </a>
+     </div>
+     <div class="swiper-slide">
+      <a href="#">
+       <img src="https://picsum.photos/1500/1000?random=4" alt="img4" />
+      </a>
+     </div>
+     <div class="swiper-slide">
+      <a href="#">
+       <img src="https://picsum.photos/1500/1000?random=5" alt="img5" />
+      </a>
+     </div>
+     <div class="swiper-slide">
+      <a href="#">
+       <img src="https://picsum.photos/1500/1000?random=6" alt="img6" />
+      </a>
+     </div>
+     <div class="swiper-slide">
+      <a href="#">
+       <img src="https://picsum.photos/1500/1000?random=7" alt="img7" />
+      </a>
+     </div>
+     <div class="swiper-slide">
+      <a href="#">
+       <img src="https://picsum.photos/1500/1000?random=8" alt="img8" />
+      </a>
+     </div>
+     <div class="swiper-slide">
+      <a href="#">
+       <img src="https://picsum.photos/1500/1000?random=9" alt="img9" />
+      </a>
+     </div>
+    </div>
+    <!-- <div class="swiper-button-next"></div> -->
+    <!-- <div class="swiper-button-prev"></div> -->
+    <div class="swiper-pagination"></div>
+   </div>
+  </div>
+
+  <!-- js -->
+  <script>
+   const swBanner = new Swiper(".swBanner", {
+    speed: 1000,
+    loop: true,
+    autoplay: {
+     delay: 2500,
+     disableOnInteraction: false,
+    },
+    pagination: {
+     el: ".swiper-pagination",
+     clickable: true,
+    },
+    // navigation: {
+    //  nextEl: ".swiper-button-next",
+    //  prevEl: ".swiper-button-prev",
+    // },
+   });
+
+   const swBannerElement = document.querySelector(".swBanner");
+   //  console.log(swBannerElement);
+   swBannerElement.addEventListener("mouseenter", () => {
+    // console.log("mouse enter");
+    swBanner.autoplay.stop();
+   });
+   swBannerElement.addEventListener("mouseleave", () => {
+    // console.log("mouse leave");
+    swBanner.autoplay.start();
+   });
+  </script>
+ </body>
+</html>

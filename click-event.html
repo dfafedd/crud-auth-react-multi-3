@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>click 이벤트(onclick)</title>
+ </head>
+ <body>
+  <button id="btn">클릭</button>
+  <button class="btn2">클릭</button>
+  <button onclick="handleClick()">클릭</button>
+
+  <!-- js -->
+  <script>
+   const handleClick = function () {
+    console.log("이벤트 리스너 사용");
+   };
+
+   document.querySelector("#btn").addEventListener("click", handleClick);
+   document.querySelector(".btn2").onclick = handleClick();
+  </script>
+ </body>
+</html>

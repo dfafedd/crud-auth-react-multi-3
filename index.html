@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D 구체 회전</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+        perspective: 1000px; /* 3D 깊이를 설정 */
+      }
+
+      .scene {
+        width: 300px;
+        height: 300px;
+        position: relative;
+        transform-style: preserve-3d;
+        animation: rotate 5s infinite linear; /* Y축을 기준으로 회전 */
+      }
+
+      .sphere {
+        width: 200px; /* 구체의 크기 */
+        height: 200px; /* 구체의 크기 */
+        background-color: #555555; /* 짙은 회색 */
+        border-radius: 50%; /* 완전한 구체로 만들기 */
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); /* 그림자 */
+        transform-origin: center; /* 회전 기준점 */
+      }
+
+      @keyframes rotate {
+        0% {
+          transform: rotateY(0deg); /* 초기 회전 각도 */
+        }
+        100% {
+          transform: rotateY(360deg); /* Y축 기준으로 360도 회전 */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scene">
+      <div class="sphere"></div>
+      <!-- 3D 회전 구체 -->
+    </div>
+  </body>
+</html>

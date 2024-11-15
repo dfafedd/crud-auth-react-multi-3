@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GSAP 배경 전환</title>
+
+  <style>
+   :root {
+    --bg-color: #222;
+   }
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+   }
+   html,
+   body {
+    /* overflow: hidden; */
+   }
+   .wrap {
+    width: 100%;
+    background-color: var(--bg-color);
+   }
+   .img-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    --bg-image: url("img/img.png");
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* opacity: 0; */
+    /* transition: opacity 1s; */
+   }
+   .item {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+   }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+ </head>
+ <body>
+  <div class="wrap">
+   <div class="img-box"></div>
+   <section
+    id="section01"
+    class="item"
+    data-bgcolor="#111111"
+    data-bgimage="url('img/img.png')"
+   ></section>
+   <section
+    id="section02"
+    class="item"
+    data-bgcolor="#593b22"
+    data-bgimage="url('img/img-1.png')"
+   ></section>
+   <section
+    id="section03"
+    class="item"
+    data-bgcolor="#245922"
+    data-bgimage="url('img/img-2.png')"
+   ></section>
+   <section
+    id="section04"
+    class="item"
+    data-bgcolor="#243859"
+    data-bgimage="url('img/img-3.png')"
+   ></section>
+   <section
+    id="section05"
+    class="item"
+    data-bgcolor="#3f2459"
+    data-bgimage="url('img/img-4.png')"
+   ></section>
+   <section
+    id="section06"
+    class="item"
+    data-bgcolor="#59243c"
+    data-bgimage="url('img/img-5.png')"
+   ></section>
+   <section
+    id="section07"
+    class="item"
+    data-bgcolor="#3f2459"
+    data-bgimage="url('img/img-6.png')"
+   ></section>
+   <section
+    id="section08"
+    class="item"
+    data-bgcolor="#222222"
+    data-bgimage="url('img/img-7.png')"
+   ></section>
+   <section
+    id="section09"
+    class="item"
+    data-bgcolor="#592624"
+    data-bgimage="url('img/img-8.png')"
+   ></section>
+  </div>
+
+  <!-- js -->
+  <script>
+   // 1. 전체 배경 변경하기
+   //  const bg = gsap.timeline({
+   //   // ScrollTrigger 플러그인을 사용하여 스크롤에 따른 애니메이션 제어
+   //   scrollTrigger: {
+   //    start: 0, // 애니메이션 시작 지점, 페이지 맨 처음에서 시작
+   //    end: "max", // 애니메이션 종료 지점, 페이지 전체 길이 끝(max)까지 적용
+   //    scrub: true,
+   //   },
+   //  });
+
+   //  bg
+   //   .to(":root", { "--bg-color": "red" })
+   //   .to(":root", { "--bg-color": "blue" })
+   //   .to(":root", { "--bg-color": "green" });
+
+   // 2. data-bgcolor로 변경하기
+   //  gsap.utils.toArray(".item").forEach((item) => {
+   //   let color = item.getAttribute("data-bgcolor");
+
+   //   ScrollTrigger.create({
+   //    trigger: item,
+   //    start: "top 50%",
+   //    end: "bottom 50%",
+   //    markers: true,
+
+   //    // 요소가 처음 화면에 진입할 때의 애니메이션
+   //    onEnter: () =>
+   //     gsap.to(":root", {
+   //      "--bg-color": color,
+   //      duration: 1,
+   //     }),
+
+   //    // 요소가 다시 스크롤되면서 화면에 진입할 때의 애니메이션
+   //    onEnterBack: () =>
+   //     gsap.to(":root", {
+   //      "--bg-color": color,
+   //      duration: 1,
+   //     }),
+   //   });
+   //  });
+
+   // 3. data-bgimage로 변경하기
+   gsap.utils.toArray(".item").forEach((item) => {
+    const image = item.getAttribute("data-bgimage");
+
+    ScrollTrigger.create({
+     trigger: item,
+     start: "top 50%",
+     end: "bottom 50%",
+     markers: true,
+
+     // 요소가 처음 화면에 진입할 때의 애니메이션
+     onEnter: () =>
+      gsap.to(".img-box", {
+       opacity: 0,
+       duration: 1,
+
+       onComplete: () => {
+        gsap.set(".img-box", {
+         "--bg-image": image,
+        });
+        gsap.to(".img-box", {
+         opacity: 1,
+         duration: 1,
+         //  ease: "power2.out",
+        });
+       },
+      }),
+
+     // 요소가 다시 스크롤되면서 화면에 진입할 때의 애니메이션
+     onEnterBack: () =>
+      gsap.to(".img-box", {
+       opacity: 0,
+       duration: 1,
+
+       onComplete: () => {
+        gsap.set(".img-box", {
+         "--bg-image": image,
+        });
+        gsap.to(".img-box", {
+         opacity: 1,
+         duration: 1,
+         //  ease: "power2.out",
+        });
+       },
+      }),
+    });
+   });
+  </script>
+ </body>
+</html>

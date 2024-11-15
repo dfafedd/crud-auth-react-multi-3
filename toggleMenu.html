@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>서브메뉴 토글 기능</title>
+  <style>
+   body {
+    font-family: Arial, sans-serif;
+   }
+   .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+   }
+   .menu > li {
+    position: relative;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    margin-right: 5px;
+   }
+   .submenu {
+    position: relative;
+    /* display: none; */
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    background-color: #f9f9f9;
+    /* border: 1px solid #ccc; */
+    height: 0;
+    overflow: hidden;
+    transition: height 0.5s;
+   }
+   .submenu > li {
+    padding: 10px;
+    cursor: pointer;
+   }
+   .submenu > li:hover {
+    background-color: #f0f0f0;
+   }
+   .active .submenu {
+    height: 132px;
+   }
+  </style>
+ </head>
+ <body>
+  <ul class="menu">
+   <li class="menu-item">
+    메뉴 1
+    <ul class="submenu">
+     <li>서브메뉴 1-1</li>
+     <li>서브메뉴 1-2</li>
+     <li>서브메뉴 1-3</li>
+    </ul>
+   </li>
+   <li class="menu-item">
+    메뉴 2
+    <ul class="submenu">
+     <li>서브메뉴 2-1</li>
+     <li>서브메뉴 2-2</li>
+     <li>서브메뉴 2-3</li>
+    </ul>
+   </li>
+   <li class="menu-item">
+    메뉴 3
+    <ul class="submenu">
+     <li>서브메뉴 3-1</li>
+     <li>서브메뉴 3-2</li>
+     <li>서브메뉴 3-3</li>
+    </ul>
+   </li>
+   <li class="menu-item">
+    메뉴 4
+    <ul class="submenu">
+     <li>서브메뉴 4-1</li>
+     <li>서브메뉴 4-2</li>
+     <li>서브메뉴 4-3</li>
+    </ul>
+   </li>
+   <li class="menu-item">
+    메뉴 5
+    <ul class="submenu">
+     <li>서브메뉴 5-1</li>
+     <li>서브메뉴 5-2</li>
+     <li>서브메뉴 5-3</li>
+    </ul>
+   </li>
+  </ul>
+
+  <!-- js -->
+  <script>
+   const menuItems = document.querySelectorAll(".menu > li");
+   let isActive = false; // 서브메뉴 활성 상태
+   let activeItem = null; // 현재 활성화 된 항목 확인
+
+   menuItems.forEach((item) => {
+    item.addEventListener("click", function () {
+     // 현재 활성화된 항목이 있고 그것이 클릭된 항목과 다르면 기존 항목을 닫기
+     if (activeItem && activeItem !== item) {
+      activeItem.classList.remove("active");
+      isActive = false;
+      console.log("서브메뉴 닫힘");
+     }
+
+     // 활성 상태를 토글
+     isActive = !isActive;
+
+     if (isActive) {
+      item.classList.add("active");
+      activeItem = item;
+      console.log("서브메뉴 열림");
+     } else {
+      item.classList.remove("active");
+      activeItem = null;
+      console.log("서브메뉴 닫힘");
+     }
+    });
+   });
+
+   // 서브메뉴의 클릭 이벤트가 상위 메뉴로 전파되지 않도록 설정
+   const submenuItems = document.querySelectorAll(".submenu > li");
+
+   submenuItems.forEach((item) => {
+    item.addEventListener("click", (e) => {
+     e.stopPropagation();
+    });
+   });
+  </script>
+ </body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>영상 모달</title>
+  <style>
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+   }
+   img {
+    border: 0;
+    vertical-align: middle;
+   }
+   .wrap {
+    width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+   }
+   .card {
+    width: 400px;
+    padding: 16px;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    word-break: break-all;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.5s;
+   }
+   .card:hover {
+    transform: scale(1.05);
+   }
+   .thumbnail {
+    width: 100%;
+    object-fit: cover;
+    margin-bottom: 5px;
+    border-radius: 4px;
+   }
+   .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    display: none;
+   }
+   .modal-body {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 16px;
+    width: 800px;
+    padding: 16px 32px 32px;
+    background-color: #f5f5f5;
+   }
+   .video-wrap {
+    width: 100%;
+   }
+   .video-wrap video {
+    /* border: 1px solid #ccc; */
+    border-radius: 8px;
+    width: 100%;
+    object-fit: cover;
+    margin-bottom: 5px;
+    display: none;
+   }
+   .video-wrap iframe {
+    border-radius: 8px;
+    width: 100%;
+    height: 414px;
+    object-fit: cover;
+    margin-bottom: 5px;
+    display: none;
+   }
+   .video-wrap p {
+   }
+   .close-btn {
+    margin-bottom: 5px;
+    color: #aaa;
+    font-size: 24px;
+    font-weight: bold;
+    float: right;
+    cursor: pointer;
+   }
+   .close-btn:hover {
+    color: #000;
+   }
+  </style>
+ </head>
+ <body>
+  <div class="wrap">
+   <!-- json 파일 연동 -->
+   <!-- <div class="card" data-id="1" data-title="영상 제목">
+    <img
+     class="thumbnail"
+     src="https://picsum.photos/400/200?random=1"
+     alt="썸네일 이미지"
+    />
+    <h1>영상 제목</h1>
+    <p>
+     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint itaque
+     natus.
+    </p>
+    <span>2024. 10. 31</span>
+   </div> -->
+  </div>
+
+  <!-- modal -->
+  <div class="modal">
+   <div class="modal-body">
+    <span class="close-btn">&times;</span>
+    <div class="video-wrap">
+     <iframe
+      src=""
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+     ></iframe>
+     <video src="" muted loop controls></video>
+     <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati
+      similique cupiditate velit ad, officia, cumque iusto, saepe quod corrupti
+      aperiam et! Mollitia amet ea in explicabo totam vel consequatur illo.
+     </p>
+    </div>
+   </div>
+  </div>
+
+  <!-- js -->
+  <script>
+   // video list
+
+   // 상태 관리 객체 초기화
+   const initState = {
+    videos: [],
+   };
+
+   const cardWrap = document.querySelector(".wrap");
+   const videoModal = document.querySelector(".modal");
+   const closeBtn = document.querySelector(".close-btn");
+   const video = document.querySelector(".video-wrap video");
+   const youtubeVideo = document.querySelector(".video-wrap iframe");
+   const videoDescription = document.querySelector(".video-wrap p");
+   //  console.log(
+   //   cardWrap,
+   //   videoModal,
+   //   closeBtn,
+   //   video,
+   //   youtubeVideo,
+   //   videoDescription
+   //  );
+
+   // json 파일 연동하여 카드 목록 생성
+   const vidUrl = "data/video.json";
+   const thumbnailPath = "https://picsum.photos/400/200?random=";
+   fetch(vidUrl)
+    .then((response) => {
+     //  console.log(response.json());
+     return response.json();
+    })
+    .then((data) => {
+     initState.videos = data; // 상태 업데이트
+     //  console.log(initState.videos);
+     makeHtmlTag();
+    })
+    .catch((err) => {
+     console.error(err);
+    });
+
+   // html 태그 생성 함수
+   const makeHtmlTag = () => {
+    const tags = initState.videos
+     .map((item) => {
+      return `
+      <div class="card" 
+        data-video-src="${item.vidSrc || ""}" 
+        data-youtube-id="${item.youtubeId || ""}"
+        data-id="${item.id}" 
+        data-title="${item.title}" 
+        data-description="${item.description}">
+        <img
+         class="thumbnail"
+         src="${thumbnailPath}${item.id}"
+         alt="${item.title}"
+        />
+        <h1>${item.title}</h1>
+        <p>${item.description}</p>
+        <span>${item.date}</span>
+      </div>`;
+     })
+     .join("");
+
+    cardWrap.innerHTML = tags;
+   };
+
+   // 카드 클릭 이벤트 핸들러 - 이벤트 위임 방식 사용
+   cardWrap.addEventListener("click", (e) => {
+    const card = e.target.closest(".card");
+    if (card) {
+     openModal(card);
+    }
+   });
+
+   // 모달 열기 함수
+   const openModal = (card) => {
+    const src = card.dataset.videoSrc;
+    const youtubeId = card.dataset.youtubeId;
+    const description = card.dataset.description;
+    console.log(src, youtubeId, description);
+
+    if (src) {
+     video.setAttribute("src", `videos/${src}`);
+     video.play();
+     video.style.display = "block";
+     youtubeVideo.style.display = "none";
+    } else if (youtubeId) {
+     youtubeVideo.setAttribute(
+      "src",
+      `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1`
+     );
+     youtubeVideo.style.display = "block";
+     video.style.display = "none";
+    }
+
+    videoDescription.textContent = description;
+    videoModal.style.display = "block";
+    console.log("비디오 모달 열었습니다!", card);
+   };
+
+   // 모달닫기 함수
+   const closeModal = () => {
+    videoModal.style.display = "none";
+    // video.pause();
+    video.src = "";
+    youtubeVideo.src = "";
+   };
+
+   closeBtn.addEventListener("click", closeModal);
+   window.addEventListener("click", (e) => {
+    if (e.target === videoModal) {
+     closeModal();
+    }
+   });
+  </script>
+ </body>
+</html>

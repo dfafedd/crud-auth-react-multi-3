@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Object객체</title>
+ </head>
+ <body>
+  <script>
+   // Object 객체
+   const person = new Object();
+
+   person.firstName = "준하";
+   person.lastName = "황";
+   person.getFullName = function () {
+    return this.lastName + " " + this.firstName;
+   };
+
+   console.log(person.getFullName());
+  </script>
+ </body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>object</title>
+ </head>
+ <body>
+  <script>
+   const person = {
+    firstName: "준하",
+    lastName: "황",
+    age: 21,
+    job: "강사",
+   };
+   person.firstName = "국남";
+   person["firstName"] = "희조";
+
+   console.log(person.firstName);
+
+   const students = ["국남", "희조", "지슬", "홍준"];
+   students[0] = "혜윤";
+   console.log(students[0]);
+   console.log(students[3]);
+  </script>
+ </body>
+</html>
